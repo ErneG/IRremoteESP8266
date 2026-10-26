@@ -634,6 +634,8 @@ void IRKelon168Ac::checksum(uint16_t length) {
 void IRKelon168Ac::send(const uint16_t repeat, const bool calcChecksum) {
   _irsend.sendKelon168(getRaw(calcChecksum), kKelon168StateLength,
                           repeat);
+  // Reset toggle flags
+  _.SwingHToggle = false;
 }
 #endif  // SEND_KELON168
 

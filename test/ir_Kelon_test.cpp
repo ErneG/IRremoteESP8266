@@ -854,3 +854,11 @@ TEST(TestKelon168Ac, SetLightCommandMatchesCapture) {
   ac.setCommand(kKelon168CommandLight);
   EXPECT_STATE_EQ(kCapDisplay, ac.getRaw(), kKelon168Bits);
 }
+
+TEST(TestKelon168Ac, HorizontalSwingToggleResetsAfterSend) {
+  IRKelon168Ac ac(kGpioUnused);
+  ac.setSwingHToggle(true);
+  EXPECT_TRUE(ac.getSwingHToggle());
+  ac.send();
+  EXPECT_FALSE(ac.getSwingHToggle());
+}
