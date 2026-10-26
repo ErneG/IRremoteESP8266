@@ -803,6 +803,33 @@ bool IRKelon168Ac::getSwing(void) const {
   return _.Swing1 && _.Swing2;
 }
 
+/// Set the horizontal swing setting of the A/C.
+/// @param[in] on true, the setting is on. false, the setting is off.
+/// @note The remote sends the same frame for on and off (it is a toggle).
+void IRKelon168Ac::setSwingH(const bool on) {
+  _.SwingH = on;
+  _.Cmd = kKelon168CommandSwingH;
+}
+
+/// Get the horizontal swing setting of the A/C.
+/// @return true, the setting is on. false, the setting is off.
+bool IRKelon168Ac::getSwingH(void) const {
+  return _.SwingH;
+}
+
+/// Set the Economy setting of the A/C.
+/// @param[in] on true, the setting is on. false, the setting is off.
+void IRKelon168Ac::setEcono(const bool on) {
+  _.Econo = on;
+  _.Cmd = kKelon168CommandEcono;
+}
+
+/// Get the Economy setting of the A/C.
+/// @return true, the setting is on. false, the setting is off.
+bool IRKelon168Ac::getEcono(void) const {
+  return _.Econo;
+}
+
 /// Set the Light (Display/LED) setting of the A/C.
 /// @param[in] on true, the setting is on. false, the setting is off.
 void IRKelon168Ac::setLight(const bool on) {
@@ -1030,11 +1057,11 @@ stdAc::state_t IRKelon168Ac::toCommon(const stdAc::state_t *prev) const {
   result.turbo = getSuper();
   result.light = getLight();
   result.sleep = _.Sleep ? 0 : -1;
-  // TODO(leonardfactory) add encoding
-  result.swingh = stdAc::swingh_t::kOff;
+  result.swingh = getSwingH() ? stdAc::swingh_t::kAuto
+                              : stdAc::swingh_t::kOff;
   result.quiet = false;
   result.filter = false;
-  result.econo = false;
+  result.econo = getEcono();
   result.clean = false;
   result.beep = false;
   result.clock = -1;
@@ -1055,6 +1082,7 @@ String IRKelon168Ac::toString(void) const {
                            kKelon168FanAuto, kKelon168FanAuto,
                            kKelon168FanMedium);
   result += addBoolToString(getSwing(), kSwingStr);
+  result += addBoolToString(getSwingH(), kSwingHStr);
   result += addBoolToString(getLight(), kLightStr);
   result += addLabeledString(minsToString(getClock()), kClockStr);
   result += addLabeledString(
@@ -1063,6 +1091,7 @@ String IRKelon168Ac::toString(void) const {
       _.OffTimerEnabled ? minsToString(getOffTimer()) : kOffStr, kOffTimerStr);
   result += addBoolToString(_.Sleep, kSleepStr);
   result += addBoolToString(getSuper(), kSuperStr);
+  result += addBoolToString(getEcono(), kEconoStr);
   result += addIntToString(_.Cmd, kCommandStr);
   result += kSpaceLBraceStr;
   switch (_.Cmd) {
@@ -1089,6 +1118,12 @@ String IRKelon168Ac::toString(void) const {
       break;
     case kKelon168CommandSwing:
       result += kSwingStr;
+      break;
+    case kKelon168CommandSwingH:
+      result += kSwingHStr;
+      break;
+    case kKelon168CommandEcono:
+      result += kEconoStr;
       break;
     case kKelon168CommandIFeel:
       result += kIFeelStr;
