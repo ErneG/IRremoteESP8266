@@ -25,6 +25,8 @@
 //   Brand: Kelon,  Model: RCH-R0Y3 remote (KELON168)
 //   Brand: Kelon,  Model: AST-09UW4RVETG00A A/C (KELON168)
 //   Brand: Hisense,  Model: AST-09UW4RVETG00A A/C (KELON168)
+//   Brand: Hisense,  Model: DG11R1-01 remote (KELON168)
+//   Brand: Hisense,  Model: TG25VE0AG A/C (KELON168)
 
 #ifndef IR_KELON_H_
 #define IR_KELON_H_
