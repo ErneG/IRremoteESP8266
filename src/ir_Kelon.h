@@ -192,7 +192,7 @@ union Kelon168Protocol {
     uint8_t OffHours  :5;
     uint8_t           :1;
     uint8_t Swing2    :1;
-    uint8_t SwingH    :1;
+    uint8_t SwingHToggle :1;
     // Byte 9
     uint8_t OffMins         :6;
     uint8_t                 :1;
@@ -300,8 +300,8 @@ class IRKelon168Ac {
   uint8_t getMode(void) const;
   void setSwing(const bool on);
   bool getSwing(void) const;
-  void setSwingH(const bool on);
-  bool getSwingH(void) const;
+  void setSwingHToggle(const bool on);
+  bool getSwingHToggle(void) const;
   void setEcono(const bool on);
   bool getEcono(void) const;
   void setLight(const bool on);

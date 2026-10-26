@@ -803,18 +803,20 @@ bool IRKelon168Ac::getSwing(void) const {
   return _.Swing1 && _.Swing2;
 }
 
-/// Set the horizontal swing setting of the A/C.
-/// @param[in] on true, the setting is on. false, the setting is off.
-/// @note The remote sends the same frame for on and off (it is a toggle).
-void IRKelon168Ac::setSwingH(const bool on) {
-  _.SwingH = on;
-  _.Cmd = kKelon168CommandSwingH;
+/// Request a toggle of the horizontal swing of the A/C.
+/// @param[in] on true, the toggle bit is set (the button press is sent).
+///   false, the toggle bit is cleared.
+/// @note The remote horizontal swing button is a toggle. The captured "on" and
+///   "off" presses are the same frame.
+void IRKelon168Ac::setSwingHToggle(const bool on) {
+  _.SwingHToggle = on;
+  if (on) _.Cmd = kKelon168CommandSwingH;
 }
 
-/// Get the horizontal swing setting of the A/C.
-/// @return true, the setting is on. false, the setting is off.
-bool IRKelon168Ac::getSwingH(void) const {
-  return _.SwingH;
+/// Get whether the horizontal swing toggle is set.
+/// @return true, the toggle bit is set. false, it is not.
+bool IRKelon168Ac::getSwingHToggle(void) const {
+  return _.SwingHToggle;
 }
 
 /// Set the Economy setting of the A/C.
@@ -1057,8 +1059,8 @@ stdAc::state_t IRKelon168Ac::toCommon(const stdAc::state_t *prev) const {
   result.turbo = getSuper();
   result.light = getLight();
   result.sleep = _.Sleep ? 0 : -1;
-  result.swingh = getSwingH() ? stdAc::swingh_t::kAuto
-                              : stdAc::swingh_t::kOff;
+  // The A/C only supports toggling horizontal swing.
+  result.swingh = stdAc::swingh_t::kOff;
   result.quiet = false;
   result.filter = false;
   result.econo = getEcono();
@@ -1082,7 +1084,8 @@ String IRKelon168Ac::toString(void) const {
                            kKelon168FanAuto, kKelon168FanAuto,
                            kKelon168FanMedium);
   result += addBoolToString(getSwing(), kSwingStr);
-  result += addBoolToString(getSwingH(), kSwingHStr);
+  result += addBoolToString(getSwingHToggle(),
+                            String(kSwingHStr) + ' ' + String(kToggleStr));
   result += addBoolToString(getLight(), kLightStr);
   result += addLabeledString(minsToString(getClock()), kClockStr);
   result += addLabeledString(
